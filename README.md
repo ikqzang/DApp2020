@@ -163,7 +163,6 @@ contract Delottery {
             booking.amount ==_amount){
             result = true
         }
-          
         return (result);
     }
 ```
