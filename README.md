@@ -152,25 +152,14 @@ contract Delottery {
 </br>
 
 
-
+สร้าง function ที่ 2 ขอข้อมูลการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
 
-    function getBuyCount(uint _id) public view returns (uint) {
+    function getBooking(uint _id) public view returns (uint) {
         Lotto memory lotto = lottos[_id];
         return (lotto.buyCount);
     }
 
-    function buyLotto(uint _id,uint price) public returns (uint _buyId,uint _buyprice,bool _buyResult){
-        Lotto storage lotto = lottos[_id];
-        address _buyer = msg.sender;
-        lotto.buyCount += price;
-        buying[_id].push(_buyer);
-        emit BuyLotto(_id, _buyer);
-        bool result = true;
-        return (_id,price,result);
-    }
-
-}
 
 ```
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
