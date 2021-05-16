@@ -11,19 +11,7 @@ contract Delottery {
     mapping (uint => Lotto) lottos;
     mapping (uint => address[]) buying;
 
-    function addLotto(
-        uint _id,
-        uint _buyCount,
-        address _owner
-        ) public {
-            lottos[_id] = Lotto({
-            id: _id,
-            buyCount: _buyCount,
-            owner: _owner
-
-        });
-        
-    }
+ 
 
     function addLottoByMaxId(uint _Maxid) public returns (bool) {
         bool result = false;
