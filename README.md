@@ -44,12 +44,6 @@ function
 
 </br>
 ## การจัดทำ (Implementation) ได้แก่ การอธิบายโค้ดเฉพาะส่วนที่สำคัญ
-```
-3mkdir pet-shop
-cd pet-shop
-```
+
 ## ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
-```
-4mkdir pet-shop
-cd pet-shop
-```
+
