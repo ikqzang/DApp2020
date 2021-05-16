@@ -47,7 +47,81 @@
 
 
 </br>
-## การจัดทำ (Implementation) ได้แก่ การอธิบายโค้ดเฉพาะส่วนที่สำคัญ
+## 3.การจัดทำ (Implementation) ได้แก่ การอธิบายโค้ดเฉพาะส่วนที่สำคัญ
+3.1 การสร้าง Smart Contract </br>
+* เริ่มด้วย การสร้างก็คือ สร้างไฟล์ชื่อ DeLotto.sol ในโฟลเดอร์ contracts โดยให้ในไฟล์มีโค้ดดังต่อไปนี้
+```
+pragma solidity >=0.5.0;
 
-## ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
+contract Delottery {
+
+}
+
+```
+เริ่มที่การกำหนด เวอร์ชั่น เป็น solidity ตั้งแต่ 0.5.0 ขึ้นไป
+โดยให้ contract ชื่อ Delottery
+</br>
+</br>
+```
+pragma solidity >=0.5.0;
+
+contract Delottery {
+  struct player {
+        address playerId;
+        uint lottoNum;
+        uint amount;
+    } 
+
+}
+    
+
+```
+สร้างฐานข้อมูล ชื่อ  player โดยเก็บข้อมูลดังนี้ 
+
+    ข้อมูล      |   ชื่อตัวแปร   |    ชนิด
+    รหัสผู้เล่น   |   playerId   |    address
+    หมายเลข   |   lottoNum   |    uint
+    จำนวน     |   amount   |    uint
+</br>
+</br>
+
+```
+
+
+    event BuyLotto(uint id, address buyer);
+    mapping (uint => Lotto) lottos;
+    mapping (uint => address[]) buying;
+
+ 
+
+    function addLottoByMaxId(uint _Maxid) public returns (bool) {
+        bool result = false;
+        _Maxid = 99; // only in test maxid = 99
+        for (uint i = 0; i < _Maxid; i ++) {
+            addLotto(i,0,0xB44BEcab8629635ecE3f30E389c4f3C9657421A4);
+            result = true;
+        }
+        return (result);           
+    }
+  
+
+    function getBuyCount(uint _id) public view returns (uint) {
+        Lotto memory lotto = lottos[_id];
+        return (lotto.buyCount);
+    }
+
+    function buyLotto(uint _id,uint price) public returns (uint _buyId,uint _buyprice,bool _buyResult){
+        Lotto storage lotto = lottos[_id];
+        address _buyer = msg.sender;
+        lotto.buyCount += price;
+        buying[_id].push(_buyer);
+        emit BuyLotto(_id, _buyer);
+        bool result = true;
+        return (_id,price,result);
+    }
+
+}
+
+```
+## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
