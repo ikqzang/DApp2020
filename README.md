@@ -155,12 +155,18 @@ contract Delottery {
 สร้าง function ที่ 2 ขอข้อมูลการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
 
-    function getBooking(uint _id) public view returns (uint) {
-        Lotto memory lotto = lottos[_id];
-        return (lotto.buyCount);
+    function getBooking(address _playerid,uint _lottoNum,unit _amount) public view returns (bool) {
+        result = flase
+        player memory booking = players[_playerid];
+        if (booking.playerId == _playerid and 
+            booking.lottoNum == _lottoNum and 
+            booking.amount ==_amount){
+            result = true
+        }
+          
+        return (result);
     }
-
-
 ```
+
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
