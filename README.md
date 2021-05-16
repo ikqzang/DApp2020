@@ -104,16 +104,16 @@ contract Delottery {
 
 สร้าง function ที่ 1 จดบันทึกการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
-    function bookLotto(uint _lottoNum,uint _amount) public returns (bool){
-        result = flase
-        address _user = msg.sender;
-        players[_user] = player({
-        playerId : _user
-        lottoNum : _lottoNum
-        amount : _amount
-        });
-        result = true
-        return (result);
+    function bookLotto(uint _lottoNum,uint _amount) public returns (bool){            //บรรทัดที่ 1
+        result = flase                                                                //บรรทัดที่ 2
+        address _user = msg.sender;                                                   //บรรทัดที่ 3
+        players[_user] = player({                                                     //บรรทัดที่ 4
+        playerId : _user                                                              //บรรทัดที่ 5
+        lottoNum : _lottoNum                                                          //บรรทัดที่ 6
+        amount : _amount                                                              //บรรทัดที่ 7
+        });                                                                           //บรรทัดที่ 8
+        result = true                                                                 //บรรทัดที่ 9
+        return (result);                                                              //บรรทัดที่ 10
     }
 ```
 บรรทัดที่ 1 </br>
