@@ -41,8 +41,7 @@
 คืนค่า Address ของผู้จอง พร้อมผลลัพท์การจอง
 ```
 
-</br></br>
-
+</br>
 
 2.3 ในส่วนของ Front-End </br>
 * สร้างช่องว่างสำหรับรับค่า หมายเลขที่สนใจ และ ปริมาณการสั่งจอง 
@@ -50,7 +49,7 @@
 * สร้างพื้นที่สำหรับแสดงผลการจอง
 
 
-
+</br>
 </br>
 
 ## 3.การจัดทำ (Implementation) ได้แก่ การอธิบายโค้ดเฉพาะส่วนที่สำคัญ
@@ -80,6 +79,7 @@ contract Delottery {
         uint lottoNum;
         uint amount;
     } 
+    mapping (address => player) players;
 
 }
     
@@ -92,9 +92,9 @@ contract Delottery {
 
    ข้อมูล      //   ชื่อตัวแปร    //    ชนิด      
    ======================================
-   รหัสผู้เล่น   //   playerId   //   address (หมายเลขกระเป๋าดิจิตอล)  
-   หมายเลข   //   lottoNum   //    uint (จำนวนเต็มบวก)    
-   จำนวน     //   amount     //    uint (จำนวนเต็มบวก)   
+   รหัสผู้จอง   //   playerId   //   address   (หมายเลขกระเป๋าดิจิตอล)  
+   หมายเลข   //   lottoNum   //    uint     (จำนวนเต็มบวก)    
+   จำนวน     //   amount     //    uint     (จำนวนเต็มบวก)   
     
 ```
     
@@ -102,20 +102,24 @@ contract Delottery {
 </br>
 
 
-สร้าง function ที่ 1 สร้างฐานข้อมูล สลากทุกหมายเลข จากการรับค่าหมายเลขสูงุสุดที่ต้องการ 
+สร้าง function ที่ 1 จดบันทึกการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
-    function addLottoByMaxId(uint _Maxid) public returns (bool) {
-        bool result = false;
-        for (uint i = 0; i < _Maxid; i ++) {
-            addLotto(i,0,0xB44BEcab8629635ecE3f30E389c4f3C9657421A4);
-            result = true;
-        }
-        return (result);           
+    function bookLotto(uint _lottoNum,uint _amount) public returns (bool){
+        result = flase
+        address _user = msg.sender;
+        players[_user] = player({
+        playerId : _user
+        lottoNum : _lottoNum
+        amount : _amount
+        });
+        result = true
+        return (result);
     }
 ```
 บรรทัดที่ 1 </br>
-กำหนดชื่อfunction เป็น addLottoByMaxId 
-กำหนดรับค่า ตัวแปร Maxid มีชนิดเป็น uint (จำนวนเต็มบวก)
+กำหนดชื่อfunction เป็น bookLotto 
+กำหนดรับค่า ตัวแปร lottoNum มีชนิดเป็น uint (จำนวนเต็มบวก)
+และ ตัวแปร amount มีชนิดเป็น uint (จำนวนเต็มบวก)
 กำหนดต้องคืนค่า ผลลัพท์ เป็น bool (ture or flase)
 
 </br>
@@ -126,11 +130,23 @@ contract Delottery {
 </br>
 
 บรรทัดที่ 3  </br>
-วนรูป โดยให้ i เป็น uint (จำนวนเต็มบวก) เริ่มต้นเป็น 0 
-โดยเงื่อนไขการวน คือหาก i <  Maxid ให้วนไปเรื่อยๆ
-และ หลังจากวน 1 รอบ i++ (i เพิ่มขึ้น 1)
+กำหนดตัวแปร user ให้เท่ากับ address ของคนที่เชื่อมต่ออยู่กับ contract นีั
 
+</br>
 
+บรรทัดที่ 4-8  </br>
+ให้บันทึก ค่าลงไปใน struct player ผ่าน  mapping players 
+โดยมี  key เป็น address 
+
+</br>
+
+บรรทัดที่ 9  </br>
+เปลี่ยนผลลัทธ์เป็น true
+
+</br>
+
+บรรทัดที่ 10  </br>
+คืนค่าผลลัพท์
     
 </br>
 </br>
