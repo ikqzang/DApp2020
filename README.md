@@ -104,32 +104,29 @@ contract Delottery {
 
 สร้าง function ที่ 1 จดบันทึกการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
-    function bookLotto(uint _lottoNum,uint _amount) public returns (bool){            //บรรทัดที่ 1
-        result = flase                                                                //บรรทัดที่ 2
-        address _user = msg.sender;                                                   //บรรทัดที่ 3
-        players[_user] = player({                                                     //บรรทัดที่ 4
-        playerId : _user                                                              //บรรทัดที่ 5
-        lottoNum : _lottoNum                                                          //บรรทัดที่ 6
-        amount : _amount                                                              //บรรทัดที่ 7
-        });                                                                           //บรรทัดที่ 8
-        result = true                                                                 //บรรทัดที่ 9
-        return (result);                                                              //บรรทัดที่ 10
+    function bookLotto(uint _lottoNum,uint _amount) public returns (address _playerid,bool result) {    //บรรทัดที่ 1
+        result = flase                                                                                  //บรรทัดที่ 2
+        address _user = msg.sender;                                                                     //บรรทัดที่ 3
+        players[_user] = player({                                                                       //บรรทัดที่ 4
+        playerId : _user                                                                                //บรรทัดที่ 5
+        lottoNum : _lottoNum                                                                            //บรรทัดที่ 6
+        amount : _amount                                                                                //บรรทัดที่ 7
+        });                                                                                             //บรรทัดที่ 8
+        result = true                                                                                   //บรรทัดที่ 9
+        return (_user,result);                                                                          //บรรทัดที่ 10
     }
 ```
 บรรทัดที่ 1 </br>
 กำหนดชื่อfunction เป็น bookLotto 
 กำหนดรับค่า ตัวแปร lottoNum มีชนิดเป็น uint (จำนวนเต็มบวก)
 และ ตัวแปร amount มีชนิดเป็น uint (จำนวนเต็มบวก)
-กำหนดต้องคืนค่า ผลลัพท์ เป็น bool (ture or flase)
+กำหนดต้องคืนค่า playerid เป็น address(หมายเลขกระเป๋าดิจิตอล) 
+ผลลัพท์ เป็น bool (ture or flase)
 
 </br>
 
-บรรทัดที่ 2 </br>
+บรรทัดที่ 2 และ 3 </br>
 กำหนดให้ผลลัทธ์เป็น false
-
-</br>
-
-บรรทัดที่ 3  </br>
 กำหนดตัวแปร user ให้เท่ากับ address ของคนที่เชื่อมต่ออยู่กับ contract นีั
 
 </br>
@@ -140,12 +137,8 @@ contract Delottery {
 
 </br>
 
-บรรทัดที่ 9  </br>
+บรรทัดที่ 9 และ 10  </br>
 เปลี่ยนผลลัทธ์เป็น true
-
-</br>
-
-บรรทัดที่ 10  </br>
 คืนค่าผลลัพท์
     
 </br>
@@ -155,17 +148,48 @@ contract Delottery {
 สร้าง function ที่ 2 ขอข้อมูลการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
 
-    function getBooking(address _playerid,uint _lottoNum,unit _amount) public view returns (bool) {
-        result = flase
-        player memory booking = players[_playerid];
-        if (booking.playerId == _playerid and 
-            booking.lottoNum == _lottoNum and 
-            booking.amount ==_amount){
-            result = true
+    function getBooking(address _playerid,uint _lottoNum,unit _amount) public view returns (bool) {     //บรรทัดที่ 1
+        result = flase                                                                                  //บรรทัดที่ 2
+        player memory booking = players[_playerid];                                                     //บรรทัดที่ 3
+        if (booking.playerId == _playerid and                                                           //บรรทัดที่ 4
+            booking.lottoNum == _lottoNum and                                                           //บรรทัดที่ 5
+            booking.amount ==_amount){                                                                  //บรรทัดที่ 6
+            result = true                                                                               //บรรทัดที่ 7
         }
-        return (result);
+        return (result);                                                                                //บรรทัดที่ 8
     }
 ```
+บรรทัดที่ 1 </br>
+กำหนดชื่อfunction เป็น getBooking
+กำหนดรับค่า ตัวแปร playerid มีชนิดเป็น address (หมายเลขกระเป๋าดิจิตอล)
+และ ตัวแปร amount มีชนิดเป็น uint (จำนวนเต็มบวก)
+และ ตัวแปร lottoNum มีชนิดเป็น uint (จำนวนเต็มบวก)
+กำหนดต้องคืนค่า ผลลัพท์ เป็น bool (ture or flase)
+
+</br>
+
+บรรทัดที่ 2  </br>
+กำหนดให้ผลลัทธ์เป็น false
+
+</br>
+
+บรรทัดที่ 3  </br>
+รับค่า ตัวแปร sturck player ที่โดน map ด้วย playerid เป็น address
+ใส่ไปในตัวแปร booking
+
+</br>
+
+บรรทัดที่ 4-6  </br>
+ใช้ ฟังก์ชัน if โดย มีเงื่อนไขว่า ค่าที่ได้มาจาก sturck player กับ ที่ับันทึก
+มีค่าเท่ากัน หรือไม่
+
+</br>
+
+บรรทัดที่ 7 และ 8  </br>
+ถ้าการผ่านเงื่อนไข if ใน บรรทัดที่ 4-6 ให้
+เปลี่ยนค่า result เป็น true
+คืนค่าผลลัพท์
+
 
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
