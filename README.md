@@ -213,6 +213,262 @@ contract Delottery {
 ```
 
 
+App.js
+```
+App = {
+  web3Provider: null,
+  contracts: {},
+  
+
+
+// Connect Dapp to ganache
+  initWeb3: async function() {
+    // Modern dapp browsers...
+    if (window.ethereum) {
+      App.web3Provider = window.ethereum;
+      try {
+        // Request account access
+        await window.ethereum.enable();
+      } catch (error) {
+        // User denied account access...
+        console.error("User denied account access")
+      }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      App.web3Provider = window.web3.currentProvider;
+    }
+    // If no injected web3 instance is detected, fall back to Ganache
+    else {
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    }
+    web3 = new Web3(App.web3Provider);
+
+    return App.initContract();
+  },
+
+  
+  initContract: function() {
+    $.getJSON('Delottery.json', function (data) {
+      var DelotteryArtifact = data;
+      App.contracts.Delottery = TruffleContract(DelotteryArtifact);
+      App.contracts.Delottery.setProvider(App.web3Provider);      
+    });
+    return App.bindEvents();
+  },
+
+  bindEvents: function() {
+   $(document).on('click', '.ubutia-btn', App.buyLotto);
+  },
+  
+  buyLotto: function(event) {
+    event.preventDefault();
+    
+    var lottoNum = Number(document.getElementById("lottoNum").value);
+    var price = Number(document.getElementById("price").value);
+    
+    var DelotteryInstance;
+
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+      var account = accounts[0];
+
+      App.contracts.Delottery.deployed().then(function (instance) {
+        DelotteryInstance = instance;
+
+        return DelotteryInstance.buyLotto(lottoNum,price, { from: account });
+      }).then(function (result) {
+        return App.getBuyCount();
+      }).catch(function (err) {
+        console.log(err.message);
+      });
+    var numBuyCount = DelotteryInstance.getBuyCount(lottoNum)
+    var output = "คำสั่งซื้อหมายเลข "+lottoNum+" จำนวน "+numBuyCount+" บาท สำเร็จแล้ว";
+            document.getElementById("result").style = "color:green";
+            document.getElementById("result").innerHTML = output;
+    });
+
+
+  
+  },
+
+  
+   
+  
+};
+
+$(function() {
+  $(window).load(function() {
+    App.initWeb3();
+  });
+});
+
+
+```
+
+
+`index.html
+```
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>สลากชนะ | DELOTTERY </title>
+        <link rel="shortcut icon" type="image/x-icon" href="assets/images/logo-icon.png"/>
+
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
+
+        <link href="assets/css/owl.carousel.css" rel="stylesheet">
+        <link href="assets/css/owl.theme.default.min.css" rel="stylesheet">
+
+        <link href="assets/css/magnific-popup.css" rel="stylesheet">
+
+        <link href="assets/css/style.css" rel="stylesheet">
+
+        
+        
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+       
+    </head>
+    <body>
+        
+        <div class="main">
+            <header class="header">
+                <!--<nav class="navbar navbar-default navbar-ubutia"> -->
+                    <div class="container">
+                        <div class="navigation-bar">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="logo">
+                                        <a href="index.html"><span class="ubutia-icon"></span></a>
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container">
+                    <div class="row">
+                        <div class="intro-box">
+                            <div class="intro">
+                                <h1>Decentralized Lottery</h1> <!--Main text in image zone-->
+                                <p>Lottery Hosted By everyone</p> <!--Secondary text in image zone-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+
+            
+            <section id="about" class="about section"> <!--javasricpt zone-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <h1 class="dynamic-price">LOTTERY TICKET</h1>
+                            <div id="LotteryRow" class="row">
+                                    <span class="Lottogif" aria-hidden="true"></span>
+                                    <br>
+                                    <div class="form-style-8">
+                                        <h2 style="color:whitesmoke;">BOOK LOTTERY TICKET</h2>
+                                        <form>
+                                          <input type="number" min="0" max="99" id="lottoNum" placeholder="กรอกตัวเลขที่สนใจ"/>
+                                          <input type="number" min="0" id="price" placeholder="จำนวน"/>
+                                          
+                                          <a class="btn ubutia-btn"  onclick= "bindEvents()">ยืนยันการจอง</a>
+                                          <p id="result">การจอง สลากหมายเลข 01 จำนวน 100 บาท สำเร็จ</p>
+                                          <p id="totalresult">ตอนนี้มีการจองสลากหมายเลข 01 มีจำนวนทั้งหมด 500 บาท</p>
+                                        </form>
+                                    </div>
+                            </div>
+                            <br>
+                            <br>
+                            
+                    </div>
+                </div>
+            
+
+            
+            </div>
+            </section>
+            <section class="purpose section"> <!--FREE ZONE-->
+                <div class="container">
+                    <h1 class="title">ABOUT US</h1>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="ubutia-card">
+                                <div class="ubutia-card-header">
+                                    <div class="card-icon">
+                                        <span class="graphic-design" aria-hidden="true"></span> <!--graphic-design in style.css .header-->
+                                    </div>
+                                </div>
+                                <div class="ubutia-card-content"> 
+                                    <h3>ความซื่อสัตย์</h3>
+                                    <p>
+                                        การจองทั้งหมดถูกจัดการโดยระบบ ผู้จัดทำไม่มีสิทธิควบคุมหรือทำการโกงได้
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="ubutia-card">
+                                <div class="ubutia-card-header">
+                                    <div class="card-icon">
+                                        <span class="webdevelopment" aria-hidden="true"></span>  
+                                    </div>
+                                </div>
+                                <div class="ubutia-card-content"> 
+                                    <h3>ไม่มีเจ้ามีอ</h3>
+                                    <p>
+                                        กำไรทุกบาทที่โดยปกติเจ้ามือได้ จะนำกลับมาคืนให้กับผู้เล่นทุกคน
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="ubutia-card">
+                                <div class="ubutia-card-header">
+                                    <div class="card-icon">
+                                        <span class="printing" aria-hidden="true"></span> <!--printing in style.css .header-->
+                                    </div>
+                                </div>
+                                <div class="ubutia-card-content"> 
+                                    <h3>เงินสำรองในอนาคต </h3>
+                                    <p>
+                                        เงินที่ระบบคืนให้ในฐานะกำไร จะถูกเก็บไปลงทุนก่อนนำมาแจกจ่าย
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section> 
+            
+            
+            
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/web3.min.js"></script>
+    <script src="assets/js/truffle-contract.js"></script>
+    <script src="assets/js/app.js"></script>
+    
+    
+    </body>
+</html>
+```
 
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
