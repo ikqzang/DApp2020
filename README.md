@@ -74,14 +74,11 @@ contract Delottery {
 pragma solidity >=0.5.0;
 
 contract Delottery {
-  struct player {
-        address playerId;
+    struct player {
         uint lottoNum;
         uint amount;
     } 
     mapping (address => player) players;
-
-}
     
 
 ```
@@ -104,16 +101,17 @@ contract Delottery {
 
 สร้าง function ที่ 1 จดบันทึกการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
-    function bookLotto(uint _lottoNum,uint _amount) public returns (address _playerid,bool result) {    //บรรทัดที่ 1
-        result = flase                                                                                  //บรรทัดที่ 2
-        address _user = msg.sender;                                                                     //บรรทัดที่ 3
-        players[_user] = player({                                                                       //บรรทัดที่ 4
-        playerId : _user                                                                                //บรรทัดที่ 5
-        lottoNum : _lottoNum                                                                            //บรรทัดที่ 6
-        amount : _amount                                                                                //บรรทัดที่ 7
-        });                                                                                             //บรรทัดที่ 8
-        result = true                                                                                   //บรรทัดที่ 9
-        return (_user,result);                                                                          //บรรทัดที่ 10
+function bookLotto(address playerAdress,uint _lottoNum,uint _amount) public returns (bool){            
+        bool result = false;                                                                                                           
+        players[playerAdress] = player
+        ({                                                                                                                  
+        lottoNum : _lottoNum,                                                         
+        amount : _amount                                                              
+        });
+
+        result = true;
+
+        return (result);                                                              
     }
 ```
 บรรทัดที่ 1 </br>
@@ -147,16 +145,9 @@ contract Delottery {
 
 สร้าง function ที่ 2 ขอข้อมูลการจองสลาก โดย จด รหัสผู้จอง หมายเลข และจำนวน 
 ```
-
-    function getBooking(address _playerid,uint _lottoNum,unit _amount) public view returns (bool) {     //บรรทัดที่ 1
-        result = flase                                                                                  //บรรทัดที่ 2
-        player memory booking = players[_playerid];                                                     //บรรทัดที่ 3
-        if (booking.playerId == _playerid and                                                           //บรรทัดที่ 4
-            booking.lottoNum == _lottoNum and                                                           //บรรทัดที่ 5
-            booking.amount ==_amount){                                                                  //บรรทัดที่ 6
-            result = true                                                                               //บรรทัดที่ 7
-        }
-        return (result);                                                                                //บรรทัดที่ 8
+function getBooking(address playerAddress) public view returns (uint,uint) {    
+        player memory booking = players[playerAddress];
+        return (booking.lottoNum,booking.amount);
     }
 ```
 บรรทัดที่ 1 </br>
@@ -191,5 +182,67 @@ contract Delottery {
 คืนค่าผลลัพท์
 
 
+
+```
+pragma solidity >=0.5.0;
+
+contract Delottery {
+    struct player {
+        uint lottoNum;
+        uint amount;
+    } 
+    mapping (address => player) players;
+
+    function bookLotto(address playerAdress,uint _lottoNum,uint _amount) public returns (bool){            
+        bool result = false;                                                                                                           
+        players[playerAdress] = player
+        ({                                                                                                                  
+        lottoNum : _lottoNum,                                                         
+        amount : _amount                                                              
+        });
+
+        result = true;
+
+        return (result);                                                              
+    }
+
+    function getBooking(address playerAddress) public view returns (uint,uint) {    
+        player memory booking = players[playerAddress];
+        return (booking.lottoNum,booking.amount);
+    }
+```
+
+
+
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
+```
+pragma solidity >=0.5.0;
+
+import "truffle/Assert.sol";
+import "truffle/DeployedAddresses.sol";
+import "../contracts/Delottery.sol";
+
+contract TestDelottery {
+  Delottery delotto = Delottery(DeployedAddresses.Delottery());
+
+  uint expectedLottoNum = 1;
+  uint expectedAmount = 100;
+  bool expectedResult = true;
+  address expectedId = msg.sender;
+  
+
+  function testbookLottoByID() public  {
+    (bool returnResult)  = delotto.bookLotto(expectedId,expectedLottoNum,expectedAmount);
+    Assert.equal(returnResult, expectedResult, "buyLotteryByID of the expected result should match what is returned.");
+  }
+  
+  
+  function testgetBookingById() public {
+    (uint returnLottoNum,uint returnAmount) = delotto.getBooking(expectedId);
+    Assert.equal(returnLottoNum, expectedLottoNum, "getBookingById of the expected LottoNum should match what is returned.");
+    Assert.equal(returnAmount, expectedAmount, "getBookingById of the expected Amount should match what is returned.");
+  }
+  
+}
+```
