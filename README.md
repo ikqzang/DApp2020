@@ -215,96 +215,106 @@ contract Delottery {
 
 App.js
 ```
+// conent html fully only connect contract it well done
 App = {
   web3Provider: null,
   contracts: {},
-  
 
-
-// Connect Dapp to ganache
   initWeb3: async function() {
-    // Modern dapp browsers...
-    if (window.ethereum) {
-      App.web3Provider = window.ethereum;
-      try {
-        // Request account access
-        await window.ethereum.enable();
-      } catch (error) {
-        // User denied account access...
-        console.error("User denied account access")
-      }
-    }
-    // Legacy dapp browsers...
-    else if (window.web3) {
-      App.web3Provider = window.web3.currentProvider;
-    }
-    // If no injected web3 instance is detected, fall back to Ganache
-    else {
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-    }
-    web3 = new Web3(App.web3Provider);
-
+  App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+  web3 = new Web3(App.web3Provider);
     return App.initContract();
   },
 
-  
   initContract: function() {
     $.getJSON('Delottery.json', function (data) {
-      var DelotteryArtifact = data;
-      App.contracts.Delottery = TruffleContract(DelotteryArtifact);
-      App.contracts.Delottery.setProvider(App.web3Provider);      
+      // Get the necessary contract artifact file and instantiate it with @truffle/contract
+      var Artifact = data;
+      App.contracts.Delottery = TruffleContract(Artifact);
+
+      // Set the provider for our contract
+      App.contracts.Delottery.setProvider(App.web3Provider);
+
+      
     });
-    return App.bindEvents();
+    return App.bindEvents(),App.bindEvents2();;
   },
 
   bindEvents: function() {
-   $(document).on('click', '.ubutia-btn', App.buyLotto);
+    $(document).on('click', '#bookingButton', App.bookingLotto);
   },
-  
-  buyLotto: function(event) {
-    event.preventDefault();
-    
-    var lottoNum = Number(document.getElementById("lottoNum").value);
-    var price = Number(document.getElementById("price").value);
-    
-    var DelotteryInstance;
 
-    web3.eth.getAccounts(function (error, accounts) {
-      if (error) {
+
+  bookingLotto: function(event) {
+    var result
+    var lottoNum = $('#lottoNum').val();
+    var amount = $('#amount').val();
+
+    var delotteryInstance;
+
+    web3.eth.getAccounts(function (error,accounts){
+      if (error){
         console.log(error);
       }
+
       var account = accounts[0];
 
-      App.contracts.Delottery.deployed().then(function (instance) {
-        DelotteryInstance = instance;
-
-        return DelotteryInstance.buyLotto(lottoNum,price, { from: account });
-      }).then(function (result) {
-        return App.getBuyCount();
-      }).catch(function (err) {
-        console.log(err.message);
-      });
-    var numBuyCount = DelotteryInstance.getBuyCount(lottoNum)
-    var output = "คำสั่งซื้อหมายเลข "+lottoNum+" จำนวน "+numBuyCount+" บาท สำเร็จแล้ว";
-            document.getElementById("result").style = "color:green";
-            document.getElementById("result").innerHTML = output;
-    });
-
-
+      App.contracts.Delottery.deployed().then(function(instance){
+        delotteryInstance = instance;
   
+        return delotteryInstance.bookLotto(account,lottoNum,amount).send();
+    }).then(function(result)  {
+      if (result == true){
+        $('#bookingResult').text('การจองสำเร็จ');
+      } else{
+        $('#bookingResult').text('error');
+      }
+    });
+    
+  });
+},
+
+
+bindEvents2: function() {
+  $(document).on('click', '#checkButton', App.getBooking);
   },
 
+getBooking: function() {
+  var delotteryInstance;
+  var returnLottoNum
+  var returnAmount
+
+  web3.eth.getAccounts(function (error,accounts){
+    if (error){
+      console.log(error);
+    }
+
+    var account = accounts[0];
+
+    App.contracts.Delottery.deployed().then(function(instance){
+      delotteryInstance = instance;
+      (returnLottoNum,returnAmount) = delotteryInstance.getBooking(account).call();
+      return returnLottoNum,returnAmount;
+  }).then(function(returnLottoNum,returnAmount)  {
+    $('#bookingIdText').text('ท่านจองสลากหมายเลข');
+    $('#bookingAmountText').text('จำนวน');
+    $('#bookingId').text(returnLottoNum);
+    $('#bookingAmount').text(returnAmount);
   
-   
+    
+  });
   
-};
+});
+  
+}
+
+}
 
 $(function() {
   $(window).load(function() {
     App.initWeb3();
   });
 });
-
 
 ```
 
@@ -382,11 +392,10 @@ $(function() {
                                         <h2 style="color:whitesmoke;">BOOK LOTTERY TICKET</h2>
                                         <form>
                                           <input type="number" min="0" max="99" id="lottoNum" placeholder="กรอกตัวเลขที่สนใจ"/>
-                                          <input type="number" min="0" id="price" placeholder="จำนวน"/>
-                                          
-                                          <a class="btn ubutia-btn"  onclick= "bindEvents()">ยืนยันการจอง</a>
-                                          <p id="result">การจอง สลากหมายเลข 01 จำนวน 100 บาท สำเร็จ</p>
-                                          <p id="totalresult">ตอนนี้มีการจองสลากหมายเลข 01 มีจำนวนทั้งหมด 500 บาท</p>
+                                          <input type="number" min="0" id="amount" placeholder="จำนวน"/> 
+                                          <button class="btn btn-primary" id="bookingButton" type="button">Booking</button>
+
+                    
                                         </form>
                                     </div>
                             </div>
@@ -395,9 +404,18 @@ $(function() {
                             
                     </div>
                 </div>
-            
+                <h2 id="bookingResult"></h2><br/><br/>
 
-            
+
+                <h1 class="dynamic-price">ตรวจสอบหมายเลขที่จอง</h1>
+                <button class="btn btn-primary" id="checkButton" type="button">check</button><br/><br/><br/>
+                <h3 id="bookingIdText"></h1>       
+                <h4 id="bookingId"></h2><br/><br/>
+                <h3 id="bookingAmountText"></h1>          
+                <h4 id="bookingAmount"></h2><br/><br/><br/>
+                
+                
+                
             </div>
             </section>
             <section class="purpose section"> <!--FREE ZONE-->
