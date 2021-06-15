@@ -69,11 +69,10 @@
                                         <h2 style="color:whitesmoke;">BOOK LOTTERY TICKET</h2>
                                         <form>
                                           <input type="number" min="0" max="99" id="lottoNum" placeholder="กรอกตัวเลขที่สนใจ"/>
-                                          <input type="number" min="0" id="price" placeholder="จำนวน"/>
-                                          
-                                          <a class="btn ubutia-btn"  onclick= "bindEvents()">ยืนยันการจอง</a>
-                                          <p id="result">การจอง สลากหมายเลข 01 จำนวน 100 บาท สำเร็จ</p>
-                                          <p id="totalresult">ตอนนี้มีการจองสลากหมายเลข 01 มีจำนวนทั้งหมด 500 บาท</p>
+                                          <input type="number" min="0" id="amount" placeholder="จำนวน"/> 
+                                          <button class="btn btn-primary" id="bookingButton" type="button">Booking</button>
+
+                    
                                         </form>
                                     </div>
                             </div>
@@ -82,9 +81,18 @@
                             
                     </div>
                 </div>
-            
+                <h2 id="bookingResult"></h2><br/><br/>
 
-            
+
+                <h1 class="dynamic-price">ตรวจสอบหมายเลขที่จอง</h1>
+                <button class="btn btn-primary" id="checkButton" type="button">check</button><br/><br/><br/>
+                <h3 id="bookingIdText"></h1>       
+                <h4 id="bookingId"></h2><br/><br/>
+                <h3 id="bookingAmountText"></h1>          
+                <h4 id="bookingAmount"></h2><br/><br/><br/>
+                
+                
+                
             </div>
             </section>
             <section class="purpose section"> <!--FREE ZONE-->
