@@ -520,3 +520,5 @@ contract TestDelottery {
   
 }
 ```
+ผลการทดสอบ
+![TESTRESULT](img/Screenshot from 2021-06-14 16-01-27.png.png)
