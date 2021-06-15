@@ -487,6 +487,30 @@ $(function() {
     </body>
 </html>
 ```
+ตัวอย่างการหน้าต่างการใช้งาน
+* หน้าเว็บสำหรับการใช้งาน
+![index01](img/index.png)
+</br>
+![index02](img/basicui.png)
+
+</br>
+* หน้าต่างสำหรับการจองสลาก
+มีช่องว่างสำหรับกรอก หมายเลขที่สนใจ กับ จำนวนที่ซื้อ
+![booking](img/bookingbutton.png)
+</br>
+หลังจากกด booking ระบบจะบันทึกการจองลง blockchain
+แล้วหากข้อมูลบันทึกสำเร็จ จะแสดงผลเป็นคำว่า การจองสำเร็จ
+![bookingresult](img/bookingresult.png)
+</br>
+* หน้าต่างสำหรับการตรวจสอบการจอง
+หลังจากกด ปุ่ม check ไปดึงช้อมูลจาก blockchain
+โดยใช้ address ของผู้กด เป็น key
+![returnbutton](img/returnbutton.png)
+</br>
+แล้วแสดงบนหน้าเว็บว่า ผลการจองเป็นหมายเลขใด
+![returnresult](img/returnresult.png)
+
+
 
 ## 4.ผลการทดสอบ (Testing) แสดงผลลัพธ์ที่ได้จากโครงการ
 
